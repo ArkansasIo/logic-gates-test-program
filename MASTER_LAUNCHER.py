@@ -20,7 +20,7 @@ class MasterSystem:
     
     def __init__(self):
         self.system_name = "8-Bit Logic Gates Computer System"
-        self.version = "2.1.0"
+        self.version = "2.2.0"
         self.modules_loaded = []
         self.config = None
         self.input_manager = None
@@ -48,8 +48,8 @@ class MasterSystem:
         """Display main menu"""
         menu = """
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                 8-BIT LOGIC GATES COMPUTER SYSTEM v2.0                     ║
-║                      MAIN SYSTEM MENU                                      ║
+║                 8-BIT LOGIC GATES COMPUTER SYSTEM v2.2.0                   ║
+║                      MAIN SYSTEM MENU (Extended Edition)                   ║
 ╠════════════════════════════════════════════════════════════════════════════╣
 
   MULTI-ARCHITECTURE SYSTEMS           CORE COMPONENTS
@@ -99,6 +99,22 @@ class MasterSystem:
   53. Load & Play Custom ROM            58. Analyze Game Memory
   54. ROM Tester                        59. ROM Library Manager
   55. Integrated Games Menu             60. Test ROM Compatibility
+
+  DEVELOPMENT SDK TOOLS                 PLUGIN SYSTEM TOOLS
+  ═══════════════════════               ═══════════════════
+  61. Create New Project                66. Load Plugin System
+  62. Open Project                      67. List Available Plugins
+  63. Save Project                      68. Enable Plugin
+  64. Build Project                     69. Disable Plugin
+  65. Project Settings                  70. Configure Plugins
+
+  IDE DEVELOPMENT TOOLS                 RPG MAKER MZ TOOLS
+  ══════════════════════                ══════════════════
+  71. Integrated Editor UI              76. RPG Maker API
+  72. Assembly (ASM) IDE                77. Create RPG Project
+  73. C Language IDE                    78. RPG Game Database
+  74. Code Compilation Test             79. Play Test Game
+  75. Integrated Development Menu       80. Advanced RPG Tools
 
 ╚════════════════════════════════════════════════════════════════════════════╝
 """
@@ -1365,8 +1381,52 @@ For more information, see COMPLETE_DOCUMENTATION.md
                 self.manage_rom_library()
             elif choice == '60':
                 self.test_rom_compatibility()
+            # Development SDK Tools (61-65)
+            elif choice == '61':
+                self.sdk_create_project()
+            elif choice == '62':
+                self.sdk_open_project()
+            elif choice == '63':
+                self.sdk_save_project()
+            elif choice == '64':
+                self.sdk_build_project()
+            elif choice == '65':
+                self.sdk_project_settings()
+            # Plugin System Tools (66-70)
+            elif choice == '66':
+                self.plugin_load_system()
+            elif choice == '67':
+                self.plugin_list_available()
+            elif choice == '68':
+                self.plugin_enable()
+            elif choice == '69':
+                self.plugin_disable()
+            elif choice == '70':
+                self.plugin_configure()
+            # IDE Development Tools (71-75)
+            elif choice == '71':
+                self.editor_ui_launch()
+            elif choice == '72':
+                self.asm_ide_launch()
+            elif choice == '73':
+                self.c_ide_launch()
+            elif choice == '74':
+                self.compilation_test()
+            elif choice == '75':
+                self.integrated_dev_menu()
+            # RPG Maker MZ Tools (76-80)
+            elif choice == '76':
+                self.rpg_maker_api_demo()
+            elif choice == '77':
+                self.rpg_create_project()
+            elif choice == '78':
+                self.rpg_database_editor()
+            elif choice == '79':
+                self.rpg_play_test()
+            elif choice == '80':
+                self.rpg_advanced_tools()
             else:
-                print("\n❌ Invalid choice. Please enter a number between 1-60 or 0 to exit.")
+                print("\n❌ Invalid choice. Please enter a number between 1-80 or 0 to exit.")
                 input("Press Enter to continue...")
 
 # ============================================================================
