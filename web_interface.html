@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-Bit Logic Gates System - Web Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .card h2 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .gate-selector {
+            margin-bottom: 20px;
+        }
+        
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        select, input {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .binary-display {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .bit {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .bit.active {
+            background: #00ff00;
+            color: #000;
+        }
+        
+        .bit:hover {
+            transform: scale(1.1);
+        }
+        
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .truth-table th, .truth-table td {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .truth-table th {
+            background: rgba(0, 0, 0, 0.5);
+            color: #ffd700;
+        }
+        
+        .transistor-diagram {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        
+        .blueprint {
+            background: #1a1a2e;
+            border: 2px solid #0f3460;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        .led {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 5px;
+            background: #444;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .led.on {
+            background: #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .calc-display {
+            grid-column: 1 / -1;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: right;
+            font-size: 24px;
+            min-height: 60px;
+        }
+        
+        .calc-btn {
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .register-display {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .register {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .register-name {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .register-value {
+            font-size: 18px;
+            color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ 8-Bit Logic Gates System ⚡</h1>
+            <p class="subtitle">Complete Computer Architecture Simulation</p>
+        </header>
+        
+        <div class="grid">
+            <!-- Logic Gates Card -->
+            <div class="card">
+                <h2>🔌 Logic Gates</h2>
+                <div class="gate-selector">
+                    <select id="gateType">
+                        <option value="AND">AND Gate</option>
+                        <option value="OR">OR Gate</option>
+                        <option value="NOT">NOT Gate</option>
+                        <option value="NAND">NAND Gate</option>
+                        <option value="NOR">NOR Gate</option>
+                        <option value="XOR">XOR Gate</option>
+                        <option value="XNOR">XNOR Gate</option>
+                    </select>
+                </div>
+                <div>Input A: <span class="led" id="ledA"></span></div>
+                <div class="binary-display">
+                    <div class="bit" id="bitA" onclick="toggleBit('A')">0</div>
+                </div>
+                <div>Input B: <span class="led" id="ledB"></span></div>
+                <div class="binary-display">
+                    <div class="bit" id="bitB" onclick="toggleBit('B')">0</div>
+                </div>
+                <button onclick="executeGate()">Execute Gate</button>
+                <div>Output: <span class="led" id="ledOut"></span></div>
+                <div class="output" id="gateOutput">Result will appear here...</div>
+                <button onclick="showTruthTable()">Show Truth Table</button>
+            </div>
+            
+            <!-- Calculator Card -->
+            <div class="card">
+                <h2>🔢 Calculator</h2>
+                <div class="calc-display" id="calcDisplay">0</div>
+                <div class="calculator">
+                    <button class="calc-btn" onclick="calcInput('7')">7</button>
+                    <button class="calc-btn" onclick="calcInput('8')">8</button>
+                    <button class="calc-btn" onclick="calcInput('9')">9</button>
+                    <button class="calc-btn" onclick="calcOp('/')">/</button>
+                    <button class="calc-btn" onclick="calcInput('4')">4</button>
+                    <button class="calc-btn" onclick="calcInput('5')">5</button>
+                    <button class="calc-btn" onclick="calcInput('6')">6</button>
+                    <button class="calc-btn" onclick="calcOp('*')">*</button>
+                    <button class="calc-btn" onclick="calcInput('1')">1</button>
+                    <button class="calc-btn" onclick="calcInput('2')">2</button>
+                    <button class="calc-btn" onclick="calcInput('3')">3</button>
+                    <button class="calc-btn" onclick="calcOp('-')">-</button>
+                    <button class="calc-btn" onclick="calcInput('0')">0</button>
+                    <button class="calc-btn" onclick="calcClear()">C</button>
+                    <button class="calc-btn" onclick="calcEqual()">=</button>
+                    <button class="calc-btn" onclick="calcOp('+')">+</button>
+                </div>
+            </div>
+            
+            <!-- CPU Registers Card -->
+            <div class="card">
+                <h2>💾 CPU Registers</h2>
+                <div class="register-display">
+                    <div class="register">
+                        <div class="register-name">Register A</div>
+                        <div class="register-value" id="regA">00000000</div>
+                    </div>
+                    <div class="register">
+                        <div class="register-name">Register B</div>
+                        <div class="register-value" id="regB">00000000</div>
+                    </div>
+                    <div class="register">
+                        <div class="register-name">Register C</div>
+                        <div class="register-value" id="regC">00000000</div>
+                    </div>
+                    <div class="register">
+                        <div class="register-name">Register D</div>
+                        <div class="register-value" id="regD">00000000</div>
+                    </div>
+                    <div class="register">
+                        <div class="register-name">Program Counter</div>
+                        <div class="register-value" id="regPC">00000000</div>
+                    </div>
+                    <div class="register">
+                        <div class="register-name">Stack Pointer</div>
+                        <div class="register-value" id="regSP">11111111</div>
+                    </div>
+                </div>
+                <button onclick="randomizeRegisters()">Randomize Registers</button>
+            </div>
+        </div>
+        
+        <!-- Transistor Diagrams Section -->
+        <div class="card">
+            <h2>⚙️ Transistor Diagrams</h2>
+            <select id="transistorSelect" onchange="showTransistor()">
+                <option value="nand">NAND Gate Transistor</option>
+                <option value="inverter">NOT Gate (Inverter)</option>
+                <option value="and">AND Gate CMOS</option>
+            </select>
+            <div class="transistor-diagram" id="transistorDiagram">
+                <pre>
+    NAND Gate Transistor-Level Diagram
+    ====================================
+    
+         Vcc (+5V)
+           |
+           ├─────────┐
+           │         │
+          ┌┴┐       ┌┴┐
+        ──┤Q1├──   ──┤Q2├──  (PMOS)
+          └┬┘       └┬┘
+           │         │
+        A──┤       B─┤
+           │         │
+           ├─────────┼────── OUT
+           │         │
+          ┌┴┐       ┌┴┐
+        ──┤Q3├──   ──┤Q4├──  (NMOS)
+          └┬┘       └┬┘
+           │         │
+        A──┤       B─┤
+           │         │
+          GND       GND
+                </pre>
+            </div>
+        </div>
+        
+        <!-- System Blueprint Section -->
+        <div class="card">
+            <h2>📐 System Blueprint</h2>
+            <div class="blueprint">
+                <pre>
+    8-Bit Computer System Architecture
+    ====================================
+    
+    ┌─────────────────────────────────────┐
+    │         SYSTEM BUS (8-bit)          │
+    └──┬────┬────┬────┬────┬────┬────┬───┘
+       │    │    │    │    │    │    │
+    ┌──┴─┐┌─┴─┐┌─┴─┐┌─┴─┐┌─┴─┐┌─┴─┐┌─┴──┐
+    │CPU ││RAM││ROM││EEP││CMS││BIO││STO │
+    │8bit││256││256││ROM││128││128││64KB│
+    └────┘└───┘└───┘└───┘└───┘└───┘└────┘
+                </pre>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Logic Gates Implementation
+        let inputA = 0;
+        let inputB = 0;
+        
+        function toggleBit(bit) {
+            if (bit === 'A') {
+                inputA = inputA === 0 ? 1 : 0;
+                document.getElementById('bitA').textContent = inputA;
+                document.getElementById('bitA').classList.toggle('active');
+                document.getElementById('ledA').classList.toggle('on');
+            } else {
+                inputB = inputB === 0 ? 1 : 0;
+                document.getElementById('bitB').textContent = inputB;
+                document.getElementById('bitB').classList.toggle('active');
+                document.getElementById('ledB').classList.toggle('on');
+            }
+        }
+        
+        function executeGate() {
+            const gateType = document.getElementById('gateType').value;
+            let result;
+            
+            switch(gateType) {
+                case 'AND':
+                    result = inputA & inputB;
+                    break;
+                case 'OR':
+                    result = inputA | inputB;
+                    break;
+                case 'NOT':
+                    result = inputA === 0 ? 1 : 0;
+                    break;
+                case 'NAND':
+                    result = (inputA & inputB) === 0 ? 1 : 0;
+                    break;
+                case 'NOR':
+                    result = (inputA | inputB) === 0 ? 1 : 0;
+                    break;
+                case 'XOR':
+                    result = inputA ^ inputB;
+                    break;
+                case 'XNOR':
+                    result = (inputA ^ inputB) === 0 ? 1 : 0;
+                    break;
+            }
+            
+            const output = `${gateType} Gate Result:\nInput A: ${inputA}\nInput B: ${inputB}\nOutput: ${result}`;
+            document.getElementById('gateOutput').textContent = output;
+            
+            const ledOut = document.getElementById('ledOut');
+            if (result === 1) {
+                ledOut.classList.add('on');
+            } else {
+                ledOut.classList.remove('on');
+            }
+        }
+        
+        function showTruthTable() {
+            const gateType = document.getElementById('gateType').value;
+            let table = `${gateType} Gate Truth Table:\n\n`;
+            
+            if (gateType === 'NOT') {
+                table += 'A | OUT\n';
+                table += '--|----\n';
+                table += '0 |  1\n';
+                table += '1 |  0\n';
+            } else {
+                table += 'A | B | OUT\n';
+                table += '--|---|----\n';
+                
+                for (let a = 0; a <= 1; a++) {
+                    for (let b = 0; b <= 1; b++) {
+                        let out;
+                        switch(gateType) {
+                            case 'AND': out = a & b; break;
+                            case 'OR': out = a | b; break;
+                            case 'NAND': out = (a & b) === 0 ? 1 : 0; break;
+                            case 'NOR': out = (a | b) === 0 ? 1 : 0; break;
+                            case 'XOR': out = a ^ b; break;
+                            case 'XNOR': out = (a ^ b) === 0 ? 1 : 0; break;
+                        }
+                        table += `${a} | ${b} |  ${out}\n`;
+                    }
+                }
+            }
+            
+            document.getElementById('gateOutput').textContent = table;
+        }
+        
+        // Calculator Implementation
+        let calcValue = '0';
+        let calcOperator = '';
+        let calcPrevValue = '';
+        
+        function calcInput(digit) {
+            if (calcValue === '0') {
+                calcValue = digit;
+            } else {
+                calcValue += digit;
+            }
+            document.getElementById('calcDisplay').textContent = calcValue;
+        }
+        
+        function calcOp(op) {
+            calcPrevValue = calcValue;
+            calcOperator = op;
+            calcValue = '0';
+        }
+        
+        function calcEqual() {
+            const prev = parseFloat(calcPrevValue);
+            const curr = parseFloat(calcValue);
+            let result;
+            
+            switch(calcOperator) {
+                case '+': result = prev + curr; break;
+                case '-': result = prev - curr; break;
+                case '*': result = prev * curr; break;
+                case '/': result = prev / curr; break;
+                default: result = curr;
+            }
+            
+            calcValue = result.toString();
+            document.getElementById('calcDisplay').textContent = calcValue;
+            calcOperator = '';
+            calcPrevValue = '';
+        }
+        
+        function calcClear() {
+            calcValue = '0';
+            calcOperator = '';
+            calcPrevValue = '';
+            document.getElementById('calcDisplay').textContent = calcValue;
+        }
+        
+        // CPU Registers
+        function randomizeRegisters() {
+            const toBinary = (n) => n.toString(2).padStart(8, '0');
+            document.getElementById('regA').textContent = toBinary(Math.floor(Math.random() * 256));
+            document.getElementById('regB').textContent = toBinary(Math.floor(Math.random() * 256));
+            document.getElementById('regC').textContent = toBinary(Math.floor(Math.random() * 256));
+            document.getElementById('regD').textContent = toBinary(Math.floor(Math.random() * 256));
+            document.getElementById('regPC').textContent = toBinary(Math.floor(Math.random() * 256));
+            document.getElementById('regSP').textContent = toBinary(Math.floor(Math.random() * 256));
+        }
+        
+        // Transistor Diagrams
+        function showTransistor() {
+            const type = document.getElementById('transistorSelect').value;
+            const diagrams = {
+                nand: `
+    NAND Gate Transistor-Level Diagram
+    ====================================
+    
+         Vcc (+5V)
+           |
+           ├─────────┐
+           │         │
+          ┌┴┐       ┌┴┐
+        ──┤Q1├──   ──┤Q2├──  (PMOS)
+          └┬┘       └┬┘
+           │         │
+        A──┤       B─┤
+           │         │
+           ├─────────┼────── OUT
+           │         │
+          ┌┴┐       ┌┴┐
+        ──┤Q3├──   ──┤Q4├──  (NMOS)
+          └┬┘       └┬┘
+           │         │
+        A──┤       B─┤
+           │         │
+          GND       GND`,
+                inverter: `
+    NOT Gate (Inverter) Transistor Diagram
+    =======================================
+    
+         Vcc (+5V)
+           |
+          ┌┴┐
+        ──┤Q1├──  (PMOS)
+          └┬┘
+           │
+        IN─┤
+           ├────── OUT
+           │
+          ┌┴┐
+        ──┤Q2├──  (NMOS)
+          └┬┘
+           │
+        IN─┤
+           │
+          GND`,
+                and: `
+    AND Gate (NAND + NOT) CMOS
+    ===========================
+    
+         ┌────────┐  ┌───────┐
+    A ───┤ NAND   ├──┤  NOT  ├─── OUT
+    B ───┤ Gate   │  └───────┘
+         └────────┘
+    
+    Composition: AND = NAND + NOT`
+            };
+            
+            document.getElementById('transistorDiagram').innerHTML = `<pre>${diagrams[type]}</pre>`;
+        }
+    </script>
+</body>
+</html>

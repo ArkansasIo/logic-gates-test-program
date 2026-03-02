@@ -1,0 +1,1 @@
+create an logic gate program with all the function logic gate  in 0, and 1 diffent types adn class and structer and modulder in binery
