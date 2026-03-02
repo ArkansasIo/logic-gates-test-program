@@ -20,7 +20,7 @@ class MasterSystem:
     
     def __init__(self):
         self.system_name = "8-Bit Logic Gates Computer System"
-        self.version = "2.0.0"
+        self.version = "2.1.0"
         self.modules_loaded = []
         self.config = None
         self.input_manager = None
@@ -92,6 +92,14 @@ class MasterSystem:
   44. Configuration Info                49. About System
   45. Help & Support                    50. Exit Program
 
+  GAMING SYSTEMS                        GAMING TOOLS & TESTS
+  ══════════════════                    ════════════════════
+  51. Game Boy Emulator                 56. Profile Game Performance
+  52. NES Emulator                      57. Debug Game Execution
+  53. Load & Play Custom ROM            58. Analyze Game Memory
+  54. ROM Tester                        59. ROM Library Manager
+  55. Integrated Games Menu             60. Test ROM Compatibility
+
 ╚════════════════════════════════════════════════════════════════════════════╝
 """
         print(menu)
@@ -120,8 +128,8 @@ class MasterSystem:
             
             a = [0, 0, 0, 0, 0, 1, 0, 1]  # 5
             b = [0, 0, 0, 0, 0, 0, 1, 1]  # 3
-            result, carry = logic_gates.BinaryOperations.add_8bit(a, b)
-            print(f"8-bit ADD: 5 + 3 = {logic_gates.BinaryOperations.binary_to_decimal(result)}")
+            result = logic_gates.BinaryOperations.add_8bit(a, b)
+            print(f"8-bit ADD: 5 + 3 = {logic_gates.BinaryOperations.bit_to_int(result)}")
             
             input("\nPress Enter to return to main menu...")
             
@@ -502,6 +510,10 @@ class MasterSystem:
             'input_control_system.py',
             'boot_splash_system.py',
             'tools_system.py',
+            'game_boy_emulator.py',
+            'nes_emulator.py',
+            'rom_manager.py',
+            'games_system.py',
             'web_interface.html',
             'COMPLETE_DOCUMENTATION.md'
         ]
@@ -522,6 +534,7 @@ class MasterSystem:
         print("  • Input: Keyboard, Mouse, Gamepad support with callbacks")
         print("  • Boot System: Splash, Boot, Loading screens with animations")
         print("  • Tools: Debugger, Profiler, Memory Analyzer, Performance Monitor, Diagnostics")
+        print("  • Gaming: Game Boy & NES emulators with ROM testing & profiling")
         print("  • Interfaces: Text UI, Web UI, REST API")
         print("  • Visualizations: Transistors, circuits, blueprints")
         
@@ -923,6 +936,209 @@ class MasterSystem:
             print(f"❌ Error: {e}")
             input("\nPress Enter to continue...")
     
+    # ===== GAMING SYSTEMS =====
+    
+    def run_gameboy_emulator(self):
+        """Run Game Boy emulator"""
+        print("\n🎮 Game Boy Emulator")
+        try:
+            from games_system import GamesSystem
+            games = GamesSystem()
+            emulator = games.launch_gameboy()
+            
+            games.run_game(frames=3)
+            emulator.display_status()
+            emulator.graphics.display_screen()
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def run_nes_emulator(self):
+        """Run NES emulator"""
+        print("\n🎮 NES Emulator")
+        try:
+            from games_system import GamesSystem
+            games = GamesSystem()
+            emulator = games.launch_nes()
+            
+            games.run_game(frames=3)
+            emulator.display_status()
+            emulator.ppu.display_screen()
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def load_and_play_rom(self):
+        """Load and play custom ROM"""
+        print("\n📦 Load & Play Custom ROM")
+        try:
+            from rom_manager import ROMLoader
+            from games_system import GamesSystem
+            
+            rom_path = input("Enter ROM file path: ").strip()
+            
+            result = ROMLoader.load_rom(rom_path)
+            if result:
+                system, cartridge = result
+                games = GamesSystem()
+                
+                if system == 'Game Boy':
+                    emulator = games.launch_gameboy(cartridge)
+                else:
+                    emulator = games.launch_nes(cartridge)
+                
+                print("\nRunning game...")
+                games.run_game(frames=5)
+                emulator.display_status()
+                
+                if system == 'Game Boy':
+                    emulator.graphics.display_screen()
+                else:
+                    emulator.ppu.display_screen()
+            else:
+                print("❌ Could not load ROM")
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def run_rom_tester(self):
+        """Run ROM tester"""
+        print("\n🧪 ROM Tester")
+        try:
+            from rom_manager import ROMTester
+            
+            rom_path = input("Enter ROM file path: ").strip()
+            
+            tester = ROMTester()
+            result = tester.test_rom(rom_path)
+            
+            if result:
+                tester.display_test_result(result)
+            else:
+                print("❌ Could not test ROM")
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def run_games_menu(self):
+        """Run integrated games menu"""
+        print("\n🎮 Integrated Games System")
+        try:
+            from games_system import run_interactive_games_menu
+            run_interactive_games_menu()
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def profile_game_performance(self):
+        """Profile game performance"""
+        print("\n📊 Profile Game Performance")
+        try:
+            from games_system import GamesSystem
+            from rom_manager import ROMLoader
+            
+            rom_path = input("Enter ROM file path (or press Enter for test game): ").strip()
+            
+            games = GamesSystem()
+            
+            if rom_path:
+                result = ROMLoader.load_rom(rom_path)
+                if result:
+                    system, cartridge = result
+                    if system == 'Game Boy':
+                        games.launch_gameboy(cartridge)
+                    else:
+                        games.launch_nes(cartridge)
+            else:
+                # Use test game
+                games.launch_gameboy()
+            
+            frames = int(input("Frames to profile (default 5): ") or "5")
+            games.profile_game(frames)
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def debug_game_execution(self):
+        """Debug game execution"""
+        print("\n🔍 Debug Game Execution")
+        try:
+            from games_system import GamesSystem
+            
+            games = GamesSystem()
+            games.launch_gameboy()
+            
+            bp_input = input("Breakpoint address in hex (default 0x0100): ").strip()
+            bp_addr = int(bp_input, 16) if bp_input else 0x0100
+            
+            games.debug_game(bp_addr)
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def analyze_game_memory(self):
+        """Analyze game memory"""
+        print("\n💾 Analyze Game Memory")
+        try:
+            from games_system import GamesSystem
+            
+            games = GamesSystem()
+            games.launch_gameboy()
+            games.analyze_memory()
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def manage_rom_library(self):
+        """Manage ROM library"""
+        print("\n📚 ROM Library Manager")
+        try:
+            from rom_manager import ROMLibrary
+            
+            library = ROMLibrary()
+            library.display_library()
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
+    def test_rom_compatibility(self):
+        """Test ROM compatibility"""
+        print("\n🧪 Test ROM Compatibility")
+        try:
+            from rom_manager import ROMTester
+            
+            rom_path = input("Enter ROM file path: ").strip()
+            
+            tester = ROMTester()
+            results = tester.test_rom_compatibility(rom_path)
+            
+            print(f"\nROM: {results['rom_path']}")
+            print(f"Detected System: {results['detected_system']}")
+            
+            tester.display_test_result(results['gameboy_test'])
+            tester.display_test_result(results['nes_test'])
+            
+            input("\nPress Enter to return to main menu...")
+        except ImportError as e:
+            print(f"❌ Error: {e}")
+            input("\nPress Enter to continue...")
+    
     def run(self):
         """Main execution loop"""
         while True:
@@ -930,7 +1146,7 @@ class MasterSystem:
             self.display_banner()
             self.display_main_menu()
             
-            choice = input("Enter your choice (1-50, 0 to exit): ").strip()
+            choice = input("Enter your choice (1-60, 0 to exit): ").strip()
             
             if choice == '0':
                 self.clear_screen()
@@ -1128,8 +1344,29 @@ For more information, see COMPLETE_DOCUMENTATION.md
                 input("\nPress Enter to return to main menu...")
             elif choice == '50':
                 self.run_gui()
+            # Gaming Systems (51-60)
+            elif choice == '51':
+                self.run_gameboy_emulator()
+            elif choice == '52':
+                self.run_nes_emulator()
+            elif choice == '53':
+                self.load_and_play_rom()
+            elif choice == '54':
+                self.run_rom_tester()
+            elif choice == '55':
+                self.run_games_menu()
+            elif choice == '56':
+                self.profile_game_performance()
+            elif choice == '57':
+                self.debug_game_execution()
+            elif choice == '58':
+                self.analyze_game_memory()
+            elif choice == '59':
+                self.manage_rom_library()
+            elif choice == '60':
+                self.test_rom_compatibility()
             else:
-                print("\n❌ Invalid choice. Please enter a number between 1-50 or 0 to exit.")
+                print("\n❌ Invalid choice. Please enter a number between 1-60 or 0 to exit.")
                 input("Press Enter to continue...")
 
 # ============================================================================
